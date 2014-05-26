@@ -3,6 +3,7 @@ package br.cin.ufpe.evaluationManager.example;
 import br.cin.ufpe.evaluationManager.client.ManagerClient;
 import br.cin.ufpe.evaluationManager.model.EvaluationConf;
 import br.cin.ufpe.evaluationManager.service.EvaluatorService;
+import java.util.Properties;
 
 /**
  *
@@ -15,25 +16,57 @@ public class EvaluatorImpl implements EvaluatorService
     public EvaluatorImpl() throws Exception
     {
         System.out.println( "[EVALUATOR] Started." );
-        client = new ManagerClient( "127.0.0.1" , 6789 , this );
+        
+        client = new ManagerClient( this );
+        client.conect( "127.0.0.1" , 6789 );
     }
 
     @Override
-    public void application( long id , String modelFilePath ) throws Exception
+    public void application( EvaluationConf conf )
     {
-        System.out.println( "[EVALUATOR] evaluate a application at "+ modelFilePath +"." );
+        System.out.println( "[EVALUATOR] evaluate a application at "+ conf.getEvaluateId() +"." );
         
-        Thread.sleep( 1000 );
-        client.evaluated( id , EvaluationConf.CODE_EVALUATED_APP );
+        try
+        {
+            Thread.sleep( 1000 );
+        }
+        catch ( InterruptedException ex )
+        {
+            // do nothing
+        }
+        
+        Properties p = new Properties();
+        p.setProperty( "evaluate_id" , conf.getEvaluateId() + ""              );
+        p.setProperty( "code"        , EvaluationConf.CODE_EVALUATED_APP + "" );
+        
+        p.setProperty( "application_energy" , "0.00" );  // consumo de energia
+        p.setProperty( "application_time"   , "0.00" );  // tempo de execucao
+        p.setProperty( "application_packet" , "0.00" );  // N° de pacotes criados
+        
+        client.evaluated( p );
     }
 
     @Override
-    public void network( long id , String modelFilePath ) throws Exception
+    public void network( EvaluationConf conf )
     {
-        System.out.println( "[EVALUATOR] evaluate a network at "+ modelFilePath +"." );
+        System.out.println( "[EVALUATOR] evaluate a network at "+ conf.getEvaluateId() +"." );
         
-        Thread.sleep( 1000 );
-        client.evaluated( id , EvaluationConf.CODE_EVALUATED_NET );
+        try
+        {
+            Thread.sleep( 1000 );
+        }
+        catch ( InterruptedException ex )
+        {
+            // do nothing
+        }
+        
+        Properties p = new Properties();
+        p.setProperty( "evaluate_id" , conf.getEvaluateId() + ""              );
+        p.setProperty( "code"        , EvaluationConf.CODE_EVALUATED_NET + "" );
+        
+        p.setProperty( "network_time"   , "0.00" );  // tempo de execucao
+        
+        client.evaluated( p );
     }
     
 }

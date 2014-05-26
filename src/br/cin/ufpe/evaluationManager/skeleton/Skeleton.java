@@ -13,7 +13,7 @@ public abstract class Skeleton implements Runnable
     private Socket socket;
     private ObjectInputStream input;
     
-    public Skeleton( Socket socket ) throws Exception
+    public Skeleton( Socket socket )
     {
         this.socket = socket;
     }
@@ -23,7 +23,7 @@ public abstract class Skeleton implements Runnable
     {
         try
         {
-            input  = new ObjectInputStream( socket.getInputStream() );
+            input  = new ObjectInputStream ( socket.getInputStream() );
             
             while( !socket.isClosed() )
             {
@@ -33,7 +33,8 @@ public abstract class Skeleton implements Runnable
         }
         catch( Exception err )
         {
-            System.err.println( "[SKELETON][ERROR] " + err.getMessage() );
+            err.printStackTrace();
+            System.err.println( "[SKELETON-INPUT][ERROR] " + err.getMessage() );
         }
         
         try
@@ -43,7 +44,7 @@ public abstract class Skeleton implements Runnable
         }
         catch( Exception err )
         {
-            System.err.println( "[SKELETON][ERROR] " + err.getMessage() );
+            System.err.println( "[SKELETON-CLOSE][ERROR] " + err.getMessage() );
         }
         
         desconnected();
@@ -51,20 +52,21 @@ public abstract class Skeleton implements Runnable
     }
     
     public abstract void process( EvaluationProtocol p ) throws Exception;
-
-    public void desconnected()
+    public abstract void desconnected();
+    
+    protected void setSocket( Socket socket )
     {
-        // do nothing
+        this.socket = socket;
     }
     
-    public Socket getSocket()
+    protected Socket getSocket()
     {
         return socket;
     }
 
-    public ObjectInputStream getInput()
+    protected ObjectInputStream getInput()
     {
         return input;
     }
-    
+
 }

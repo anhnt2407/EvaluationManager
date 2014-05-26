@@ -63,21 +63,5 @@ public class CacheRepository implements Repository
         
         return list;
     }
-
-    @Override
-    public List<EvaluationConf> list( long userId , long projectId )
-    {
-        List<EvaluationConf> list = new ArrayList<>();
-        for( EvaluationConf conf : cache.values() )
-        {
-            if( conf.getUserId() == userId 
-                    && conf.getProjectId() == projectId )
-            {
-                list.add( conf );
-            }
-        }
-        
-        return list;
-    }
     
 }

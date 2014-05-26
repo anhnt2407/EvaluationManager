@@ -10,11 +10,11 @@ import java.net.Socket;
  *
  * @author avld
  */
-public class EditorSkeleton extends Skeleton
+public class EditorSkeleton extends ReconnectSkeleton
 {
     private EditorService service;
     
-    public EditorSkeleton( Socket socket , EditorService service ) throws Exception
+    public EditorSkeleton( Socket socket , EditorService service )
     {
         super( socket );
         this.service = service;
@@ -36,5 +36,5 @@ public class EditorSkeleton extends Skeleton
             service.inProgress( conf , status );
         }
     }
-    
+
 }

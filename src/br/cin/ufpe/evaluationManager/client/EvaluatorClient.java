@@ -1,10 +1,16 @@
 package br.cin.ufpe.evaluationManager.client;
 
+import br.cin.ufpe.evaluationManager.model.EvaluationConf;
 import br.cin.ufpe.evaluationManager.remote.EvaluationProtocol;
+import br.cin.ufpe.evaluationManager.resend.EvaluatorResendRunnable;
+import br.cin.ufpe.evaluationManager.resend.TranslatorResendRunnable;
 import br.cin.ufpe.evaluationManager.service.EvaluatorService;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  *
@@ -16,36 +22,65 @@ public class EvaluatorClient implements EvaluatorService
     private Socket socket;
     private ObjectOutputStream output;
     
+    private ScheduledExecutorService service;
+    private EvaluatorResendRunnable resend;
+    
     public EvaluatorClient( Socket socket ) throws IOException
     {
-        this.counter = 1;
-        
         this.socket = socket;
         this.output = new ObjectOutputStream( socket.getOutputStream() );
+        
+        this.counter = 1;
+        this.resend  = new EvaluatorResendRunnable( this );
+        
+        this.service = Executors.newSingleThreadScheduledExecutor();
+        this.service.scheduleAtFixedRate( resend , 1 , 1 , TimeUnit.MINUTES );
     }
     
     @Override
-    public void application( long id , String modelFilePath ) throws Exception
+    public void application( EvaluationConf conf )
     {
         EvaluationProtocol p = new EvaluationProtocol();
         p.setId( counter++ );
         p.setOperation( "application" );
-        p.addParam( id );
-        p.addParam( modelFilePath );
+        p.addParam( conf );
         
-        output.writeObject( p );
+        try
+        {
+            synchronized( output )
+            {
+                output.writeObject( p );
+                output.flush();
+                //output.reset();
+            }
+        }
+        catch ( IOException ex )
+        {
+            resend.add( conf , TranslatorResendRunnable.TYPE_APP );
+        }
     }
 
     @Override
-    public void network( long id , String modelFilePath ) throws Exception
+    public void network( EvaluationConf conf )
     {
         EvaluationProtocol p = new EvaluationProtocol();
         p.setId( counter++ );
         p.setOperation( "network" );
-        p.addParam( id );
-        p.addParam( modelFilePath );
+        p.addParam( conf );
         
-        output.writeObject( p );
+        try
+        {
+            synchronized( output )
+            {
+                output.writeObject( p );
+                output.flush();
+                //output.reset();
+            }
+        }
+        catch ( IOException ex )
+        {
+            resend.add( conf , TranslatorResendRunnable.TYPE_NET );
+        }
     }
     
     public boolean isThisSocket( Socket socket )

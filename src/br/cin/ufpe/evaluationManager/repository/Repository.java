@@ -19,5 +19,4 @@ public interface Repository
     public EvaluationConf get( long id );
     
     public List<EvaluationConf> list( long userId );
-    public List<EvaluationConf> list( long userId , long projectId );
 }

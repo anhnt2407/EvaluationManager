@@ -1,5 +1,6 @@
 package br.cin.ufpe.evaluationManager.skeleton;
 
+import br.cin.ufpe.evaluationManager.model.EvaluationConf;
 import br.cin.ufpe.evaluationManager.remote.EvaluationProtocol;
 import br.cin.ufpe.evaluationManager.service.EvaluatorService;
 import java.net.Socket;
@@ -8,11 +9,11 @@ import java.net.Socket;
  *
  * @author avld
  */
-public class EvaluatorSkeleton extends Skeleton
+public class EvaluatorSkeleton extends ReconnectSkeleton
 {
     private EvaluatorService service;
     
-    public EvaluatorSkeleton( Socket socket , EvaluatorService service ) throws Exception
+    public EvaluatorSkeleton( Socket socket  , EvaluatorService service ) throws Exception
     {
         super( socket );
         this.service = service;
@@ -23,17 +24,15 @@ public class EvaluatorSkeleton extends Skeleton
     {
         if( "application".equalsIgnoreCase( p.getOperation() ) )
         {
-            long   id    = (Long) p.getParams().get( 0 );
-            String model = (String) p.getParams().get( 1 );
+            EvaluationConf conf = (EvaluationConf) p.getParams().get( 0 );
             
-            service.application( id , model );
+            service.application( conf );
         }
         else if( "network".equalsIgnoreCase( p.getOperation() ) )
         {
-            long   id    = (Long) p.getParams().get( 0 );
-            String model = (String) p.getParams().get( 1 );
+            EvaluationConf conf = (EvaluationConf) p.getParams().get( 0 );
             
-            service.network( id , model );
+            service.network( conf );
         }
     }
     

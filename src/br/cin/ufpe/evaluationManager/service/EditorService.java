@@ -7,9 +7,9 @@ import br.cin.ufpe.evaluationManager.model.EvaluationStatus;
  *
  * @author avld
  */
-public interface EditorService
+public interface EditorService extends ClientService
 {
-    public void created    ( EvaluationConf conf ) throws Exception;
-    public void finished   ( EvaluationConf conf ) throws Exception;
-    public void inProgress ( EvaluationConf conf , EvaluationStatus status ) throws Exception;
+    public void created    ( EvaluationConf conf );
+    public void finished   ( EvaluationConf conf );
+    public void inProgress ( EvaluationConf conf , EvaluationStatus status );
 }

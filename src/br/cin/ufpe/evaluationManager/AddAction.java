@@ -1,10 +1,8 @@
 package br.cin.ufpe.evaluationManager;
 
 import br.cin.ufpe.evaluationManager.client.TranslatorClient;
-import br.cin.ufpe.evaluationManager.model.ApplicationRequest;
 import br.cin.ufpe.evaluationManager.model.EvaluationConf;
 import br.cin.ufpe.evaluationManager.model.EvaluationStatus;
-import br.cin.ufpe.evaluationManager.model.NetworkRequest;
 
 /**
  *
@@ -19,7 +17,7 @@ public class AddAction
         this.resource = resource;
     }
     
-    public synchronized void action( EvaluationConf conf ) throws Exception
+    public synchronized void action( EvaluationConf conf )
     {
         //---------- salva no repositorio
         long id = resource.getRepository().add( conf );
@@ -27,21 +25,52 @@ public class AddAction
         //---------- cria um novo status
         resource.getRepository().add( new EvaluationStatus( id , "Created." ) );
         
-        //---------- seleciona um tradutor
-        TranslatorClient client = resource.selectTranslator();
-        
         //---------- envia a requisicao para o tradutor
+        try
+        {
+            sendToTranslator( conf );
+        }
+        catch( Exception err )
+        {
+            resource.getAddedResendRunnable().add( conf );
+        }
+        
+        try
+        {
+            resource.selectEditor().created( conf );
+        }
+        catch( Exception err )
+        {
+            System.err.println( "[ADD][ERROR] " + err.getMessage() );
+        }
+    }
+    
+    public void sendToTranslator( EvaluationConf conf ) throws Exception
+    {
         if( conf.getConfiguration().containsKey( "application_evaluate" )
                 || conf.getConfiguration().containsKey( "both_evaluate" ) )
         {
-            client.application( new ApplicationRequest( conf ) );
+            TranslatorClient client = resource.selectTranslator();      //seleciona
+            client.application( conf );                                 //envia
         }
-        else
+        else if ( conf.getConfiguration().containsKey( "network_evaluate" ) )
         {
-            client.network( new NetworkRequest( conf ) );
+            TranslatorClient client = resource.selectTranslator();      //seleciona
+            client.network( conf );                                     //envia
         }
-        
-        resource.selectEditor().created( conf );
+        else if( conf.getConfiguration().containsKey( "sensibility_evaluate" ) )
+        {
+            try
+            {
+                SensibilityAction action = new SensibilityAction( resource );
+                action.add( conf );
+            }
+            catch( Exception err )
+            {
+                System.err.println( "[ADD][ERROR] " + err.getMessage() );
+                System.err.println( "THIS ERROR SHOULD SEND TO EDITOR!" );
+            }
+        }
     }
     
 }

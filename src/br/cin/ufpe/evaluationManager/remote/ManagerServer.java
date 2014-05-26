@@ -10,7 +10,7 @@ import java.util.concurrent.Executors;
  */
 public class ManagerServer
 {
-    public static final int PORT = 6789;
+    public static int PORT = 6789;
     
     public int port;
     private ServerRunnable server;

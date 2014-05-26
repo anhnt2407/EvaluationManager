@@ -7,6 +7,8 @@ package br.cin.ufpe.evaluationManager.model;
 public class NetworkRequest
 {
     private long evaluateId;
+    private long userId;
+    
     private String path;
     private String name;
     private boolean reliability;
@@ -64,6 +66,16 @@ public class NetworkRequest
     public void setName( String name )
     {
         this.name = name;
+    }
+
+    public long getUserId()
+    {
+        return userId;
+    }
+
+    public void setUserId( long userId )
+    {
+        this.userId = userId;
     }
     
 }

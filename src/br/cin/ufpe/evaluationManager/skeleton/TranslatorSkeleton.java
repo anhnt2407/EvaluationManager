@@ -1,7 +1,6 @@
 package br.cin.ufpe.evaluationManager.skeleton;
 
-import br.cin.ufpe.evaluationManager.model.ApplicationRequest;
-import br.cin.ufpe.evaluationManager.model.NetworkRequest;
+import br.cin.ufpe.evaluationManager.model.EvaluationConf;
 import br.cin.ufpe.evaluationManager.remote.EvaluationProtocol;
 import br.cin.ufpe.evaluationManager.service.TranslatorService;
 import java.net.Socket;
@@ -10,7 +9,7 @@ import java.net.Socket;
  *
  * @author avld
  */
-public class TranslatorSkeleton extends Skeleton
+public class TranslatorSkeleton extends ReconnectSkeleton
 {
     private TranslatorService service;
     
@@ -25,14 +24,14 @@ public class TranslatorSkeleton extends Skeleton
     {
         if( "application".equalsIgnoreCase( p.getOperation() ) )
         {
-            ApplicationRequest req = (ApplicationRequest) p.getParams().get( 0 );
-            service.application( req );
+            EvaluationConf conf = (EvaluationConf) p.getParams().get( 0 );
+            service.application( conf );
         }
         else if( "network".equalsIgnoreCase( p.getOperation() ) )
         {
-            NetworkRequest req = (NetworkRequest) p.getParams().get( 0 );
-            service.network( req );
+            EvaluationConf conf = (EvaluationConf) p.getParams().get( 0 );
+            service.network( conf );
         }
     }
-    
+
 }

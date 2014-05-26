@@ -6,6 +6,7 @@ import br.cin.ufpe.evaluationManager.client.TranslatorClient;
 import br.cin.ufpe.evaluationManager.model.EvaluationConf;
 import br.cin.ufpe.evaluationManager.service.ManagerService;
 import java.net.Socket;
+import java.util.Properties;
 
 /**
  *
@@ -13,20 +14,15 @@ import java.net.Socket;
  */
 public class EvaluationManager implements ManagerService
 {
+    public static String PROJECT_PATH = "/opt/idea4wsn/";
+    
     private static EvaluationManager instance;
     
-    private Resource        resource;
-    private AddAction       addAction;
-    private ModelledAction  modelledAction;
-    private EvaluatedAction evaluatedAction;
+    private Resource        resource        ;
     
     private EvaluationManager()
     {
         resource  = new Resource();
-        
-        addAction       = new AddAction( resource );
-        modelledAction  = new ModelledAction( resource );
-        evaluatedAction = new EvaluatedAction( resource );
     }
     
     // -------------- SINGLETON
@@ -50,17 +46,20 @@ public class EvaluationManager implements ManagerService
             case ManagerService.TYPE_EDITOR     :
                 resource
                         .getEditorList()
-                        .add( new EditorClient( socket ) ); 
+                        .add( new EditorClient( socket ) );
+                System.out.println( "[CONNECTED] adicionou um editor." );
                 return true;
             case ManagerService.TYPE_EVALUATOR  :
                 resource
                         .getEvaluatorList()
                         .add( new EvaluatorClient( socket ) ); 
+                System.out.println( "[CONNECTED] adicionou um avaliador." );
                 return true;
             case ManagerService.TYPE_TRANSLATOR :
                 resource
                         .getTranslatorList()
                         .add( new TranslatorClient(socket ) ); 
+                System.out.println( "[CONNECTED] adicionou um tradutor." );
                 return true;
         }
         
@@ -84,43 +83,19 @@ public class EvaluationManager implements ManagerService
     @Override
     public void add( EvaluationConf conf )
     {
-        try
-        {
-            addAction.action( conf );
-        }
-        catch( Exception err )
-        {
-            System.err.println( "[ADD][ERROR] " + err.getMessage() + ". [TRY AGAIN]" );
-            add( conf );
-        }
+        resource.getAddAction().action( conf );
     }
 
     @Override
-    public void modelled( long evaluateId , int type )
+    public void modelled( Properties properties )
     {
-        try
-        {
-            modelledAction.action( evaluateId , type );
-        }
-        catch( Exception err )
-        {
-            System.err.println( "[MODELLED][ERROR] " + err.getMessage() + ". [TRY AGAIN]" );
-            modelled( evaluateId , type );
-        }
+        resource.getModelledAction().action( properties );
     }
 
     @Override
-    public void evaluated( long evaluateId , int type )
+    public void evaluated( Properties properties )
     {
-        try
-        {
-            evaluatedAction.action( evaluateId , type );
-        }
-        catch( Exception err )
-        {
-            System.err.println( "[EVALUATED][ERROR] " + err.getMessage() + ". [TRY AGAIN]" );
-            evaluated( evaluateId , type );
-        }
+        resource.getEvaluatedAction().action( properties );
     }
     
 }

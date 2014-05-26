@@ -1,12 +1,14 @@
 package br.cin.ufpe.evaluationManager.service;
 
+import br.cin.ufpe.evaluationManager.model.EvaluationConf;
+
 /**
  * 
  * 
  * @author avld
  */
-public interface EvaluatorService
+public interface EvaluatorService extends ClientService
 {
-    public void application ( long id , String modelFilePath ) throws Exception;
-    public void network     ( long id , String modelFilePath ) throws Exception;
+    public void application ( EvaluationConf conf );
+    public void network     ( EvaluationConf conf );
 }

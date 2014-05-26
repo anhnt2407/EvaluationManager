@@ -16,25 +16,36 @@ public class EditorImpl implements EditorService
     public EditorImpl() throws Exception
     {
         System.out.println( "[EDITOR] Started." );
+        
+        client = new ManagerClient( this );
+        client.conect( "127.0.0.1" , 6789 );
     }
     
     @Override
-    public void created( EvaluationConf conf ) throws Exception
+    public void created( EvaluationConf conf )
     {
         System.out.println( "[EDITOR] Created : " + conf.getEvaluateId() );
     }
     
     @Override
-    public void finished( EvaluationConf conf ) throws Exception
+    public void finished( EvaluationConf conf )
     {
         System.out.println( "[EDITOR] Finished : " + conf.getEvaluateId() );
         
-        Thread.sleep( 1000 );
+        try
+        {
+            Thread.sleep( 1000 );
+        }
+        catch ( InterruptedException ex )
+        {
+            
+        }
+        
         client.add( conf );
     }
 
     @Override
-    public void inProgress( EvaluationConf conf , EvaluationStatus status ) throws Exception
+    public void inProgress( EvaluationConf conf , EvaluationStatus status )
     {
         
     }
@@ -44,9 +55,4 @@ public class EditorImpl implements EditorService
         return client;
     }
 
-    public void setClient( ManagerClient client )
-    {
-        this.client = client;
-    }
-    
 }

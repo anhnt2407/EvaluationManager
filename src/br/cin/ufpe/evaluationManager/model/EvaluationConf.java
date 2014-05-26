@@ -21,17 +21,18 @@ public class EvaluationConf implements Serializable
     
     private long evaluateId;            // identificacao da avaliacao
     private long userId;                // identificacao do usuario
-    private long projectId;             // identificacao do projeto
     
     private int code;                   // código do status
     
     private Map<String,String> configuration;   // configuracao
     private List<EvaluationStatus> status;        // status
+    private List<Long> children;
     
     public EvaluationConf()
     {
         configuration = new HashMap<>();
-        status = new LinkedList<>();
+        status        = new LinkedList<>();
+        children      = new LinkedList<>();
     }
 
     public long getEvaluateId() {
@@ -48,14 +49,6 @@ public class EvaluationConf implements Serializable
 
     public void setUserId(long userId) {
         this.userId = userId;
-    }
-
-    public long getProjectId() {
-        return projectId;
-    }
-
-    public void setProjectId(long projectId) {
-        this.projectId = projectId;
     }
 
     public Map<String, String> getConfiguration() {
@@ -81,22 +74,45 @@ public class EvaluationConf implements Serializable
     public void setCode(int code) {
         this.code = code;
     }
+
+    public List<Long> getChildren()
+    {
+        return children;
+    }
+
+    public void setChildren( List<Long> children )
+    {
+        this.children = children;
+    }
     
     /**                          Configurações
      * 
-     * "both_evaluate"        : indica que deve avaliar uma aplicacao e uma rede
+     * "both_evaluate"          : indica que deve avaliar uma aplicacao e uma rede
+     * 
      * 
      * "application_evaluate"   : indica que deve avaliar uma aplicacao
      * "application_model_name" : nome do modelo da aplicacao
      * "application_function"   : indica a funcao que deve ser avaliada
      * "application_path"       : caminho da pasta da aplicacao para ser modelado
      * 
+     * 
      * "network_evaluate"       : indica que deve avaliar uma rede
      * "network_model_name"     : nome do modelo da aplicao
      * "network_reliability"    : se deve avaliar a confiabilidade da rede
      * "network_path"           : caminho do arquivo da rede para ser modelado
+     * ------------------------
+     * "criteria_stop"
+     * "criteria_stop_value"
+     * 
      * 
      * "sensibility_evaluate"   : faz uma analise de sensibilidade
-     * "sensibility_parent_id"  : indica a avaliacao pai da sensibilidade
+     * "sensibility_path"       : indica o arquivo de configuracao da Analise de Sensibilidade
+     * 
+     * 
+     */
+    
+    /**                         Retorno
+     * 
+     * 
      */
 }

@@ -1,6 +1,7 @@
 package br.cin.ufpe.evaluationManager.service;
 
 import br.cin.ufpe.evaluationManager.model.EvaluationConf;
+import java.util.Properties;
 
 /**
  * 
@@ -21,9 +22,9 @@ public interface ManagerService
     
     // ------------------- //
     
-    public void add      ( EvaluationConf conf )         throws Exception;
-    public void modelled ( long evaluateId , int type ) throws Exception;
-    public void evaluated( long evaluateId , int type ) throws Exception;
+    public void add      ( EvaluationConf conf )  ;
+    public void modelled ( Properties properties );
+    public void evaluated( Properties properties );
 //    public EvaluateConf       get ( int evaluateId );
 //    public List<EvaluateConf> list( int userId , int projectId );
 //    public List<EvaluateConf> list( int userId );

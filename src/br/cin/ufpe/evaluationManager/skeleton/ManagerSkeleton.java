@@ -4,6 +4,7 @@ import br.cin.ufpe.evaluationManager.EvaluationManager;
 import br.cin.ufpe.evaluationManager.model.EvaluationConf;
 import br.cin.ufpe.evaluationManager.remote.EvaluationProtocol;
 import java.net.Socket;
+import java.util.Properties;
 
 /**
  *
@@ -44,17 +45,15 @@ public class ManagerSkeleton extends Skeleton
         }
         else if( "modelled".equalsIgnoreCase( p.getOperation() ) )
         {
-            long id   = (Long)    p.getParams().get( 0 );
-            int  code = (Integer) p.getParams().get( 1 );
+            Properties properties = (Properties) p.getParams().get( 0 );
             
-            service.modelled( id , code );
+            service.modelled( properties );
         }
         else if( "evaluated".equalsIgnoreCase( p.getOperation() ) )
         {
-            long id   = (Long)    p.getParams().get( 0 );
-            int  code = (Integer) p.getParams().get( 1 );
+            Properties properties = (Properties) p.getParams().get( 0 );
             
-            service.evaluated( id , code );
+            service.evaluated( properties );
         }
     }
     

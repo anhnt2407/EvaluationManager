@@ -1,14 +1,13 @@
 package br.cin.ufpe.evaluationManager.service;
 
-import br.cin.ufpe.evaluationManager.model.ApplicationRequest;
-import br.cin.ufpe.evaluationManager.model.NetworkRequest;
+import br.cin.ufpe.evaluationManager.model.EvaluationConf;
 
 /**
  *
  * @author avld
  */
-public interface TranslatorService
+public interface TranslatorService extends ClientService
 {
-    public void application( ApplicationRequest conf ) throws Exception;
-    public void network( NetworkRequest conf ) throws Exception;
+    public void application( EvaluationConf conf );
+    public void network    ( EvaluationConf conf );
 }
